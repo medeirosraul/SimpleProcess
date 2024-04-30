@@ -11,6 +11,7 @@ namespace WebApiSample.Processes
             context.Products.Add(new SaleProduct { Name = "Product 1", Value = 100 });
             context.Products.Add(new SaleProduct { Name = "Product 2", Value = 200 });
             context.Products.Add(new SaleProduct { Name = "Product 3", Value = 300 });
+            context.MunicipalTaxIsent = true;
 
             return Task.CompletedTask;
         }

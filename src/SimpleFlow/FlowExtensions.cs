@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace SimpleFlow
 {
@@ -9,7 +10,10 @@ namespace SimpleFlow
             where TContext : IFlowContext
         {
             // Add Flow as a keyed service into the DI container
-            services.AddKeyedScoped<Flow<TContext>>(name);
+            services.AddKeyedScoped<Flow<TContext>>(name, (sp, name) =>
+            {
+                return new Flow<TContext>(sp.GetRequiredService<IOptionsSnapshot<FlowOptions<TContext>>>(), sp, name as string);
+            });
 
             // Configure the FlowOptions<TContext> with the provided configuration
             services.Configure(name, configure);

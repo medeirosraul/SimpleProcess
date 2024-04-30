@@ -1,6 +1,6 @@
 ﻿namespace SimpleFlow
 {
-    public enum FlowNodeStatus
+    public enum NodeStatus
     {
         NotStarted,
         Running,

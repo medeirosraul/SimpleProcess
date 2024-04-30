@@ -15,14 +15,21 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddFlow<SaleContext>("SaleProcessing", options =>
 {
     options
-        .AddNode<InitProcess>("Init")
-        .AddNext<DiscountProcess>("Discount");
-        // .AddBranch("Discount", branch =>
-        // {
-        //    branch.AddNode<MunicipalTaxProcess>("MunicipalTax")
-        //          .AddNext<ShippingProcess>("Shipping");
-        //    branch.AddNode<StateTaxProcess>("StateTax")
-        // })
+        .Begin<InitProcess>("Init")
+        .AddNext<DiscountProcess>("Discount")
+        .AddBranch("Taxes", taxesBranch =>
+        {
+            taxesBranch.Begin<MunicipalTaxProcess>("MunicipalTax").WithCondition(ctx => !ctx.MunicipalTaxIsent)
+                .AddNext<UpdateDatabaseProcess>("UpdateMunicipalTax");
+            taxesBranch.Begin<StateTaxProcess>("StateTax")
+                .AddBranch("StateTaxBranch", stateTaxBranch =>
+                {
+                    stateTaxBranch.Begin<StateTaxIncentiveProcess>("StateTaxIncentive");
+                    stateTaxBranch.Begin<StateTaxRegistrationProcess>();
+                })
+                .AddNext<UpdateDatabaseProcess>("UpdateStateTax");
+        })
+        .AddNext<CheckoutProcess>("Checkout");
 });
 
 var app = builder.Build();

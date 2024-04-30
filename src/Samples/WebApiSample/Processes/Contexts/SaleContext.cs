@@ -8,6 +8,8 @@ namespace WebApiSample.Processes.Contexts
         public decimal Discount => Discounts.Sum(d => d.Value);
         public decimal TotalValue => GetTotalValue();
 
+        public bool MunicipalTaxIsent { get; set; } = false;
+
         public ICollection<SaleProduct> Products { get; set; } = [];
         public ICollection<SaleTax> Taxes { get; set; } = [];
         public ICollection<SaleDiscount> Discounts { get; set; } = [];
